@@ -1267,6 +1267,13 @@ export async function startMcpHttpServer(
             ...(Object.keys(r.metadata).length > 0 ? { metadata: r.metadata } : {}),
             line,
             snippet: addLineNumbers(snippet, line),
+            // The best-matching chunk whole, with its 1-based line range: the snippet above is a few
+            // lines picked by query-term overlap, which for a paraphrase often misses the passage.
+            chunk: {
+              line: r.body.slice(0, r.bestChunkPos).split('\n').length,
+              endLine: r.body.slice(0, r.bestChunkPos).split('\n').length + r.bestChunk.split('\n').length - 1,
+              text: r.bestChunk,
+            },
           };
         });
 
